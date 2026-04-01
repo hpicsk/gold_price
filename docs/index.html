@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>금 가격 회귀 모델 | Gold Price Regression Model</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Hero -->
+    <header class="hero">
+        <h1>금 가격 회귀 모델</h1>
+        <p class="subtitle">
+            Gold Price Regression Model — 5가지 핵심 경제 지표를 활용한 다중 회귀 분석
+        </p>
+    </header>
+
+    <!-- Gold Price Overview -->
+    <section>
+        <h2>금 가격 추이 (Historical Gold Price)</h2>
+        <div class="chart-container">
+            <img src="images/gold_timeseries.png" alt="Gold price time series">
+            <p class="caption">2010년부터 현재까지 금 가격 (USD/oz) 추이</p>
+        </div>
+    </section>
+
+    <!-- 5 Indicators -->
+    <section>
+        <h2>5가지 핵심 지표 (Key Indicators)</h2>
+        <p>금의 가치를 결정하는 핵심 경제 지표들과 그 관계를 분석합니다.</p>
+
+        <div class="indicators-grid">
+
+            <div class="indicator-card">
+                <span class="direction inverse">↓ 역의 관계 (Inverse)</span>
+                <h3>1. 실질 금리 (Real Interest Rate)</h3>
+                <p>
+                    명목 금리에서 물가 상승률을 뺀 값입니다. 금은 이자를 주지 않는 자산이므로,
+                    실질 금리가 높으면 금을 보유할 유인이 줄어들어 가격이 하락합니다.
+                    반대로 실질 금리가 마이너스가 되면 화폐 가치 하락을 방어하기 위해 금값이 상승합니다.
+                </p>
+            </div>
+
+            <div class="indicator-card">
+                <span class="direction inverse">↓ 역의 관계 (Inverse)</span>
+                <h3>2. 미국 달러 가치 (USD Index)</h3>
+                <p>
+                    금은 전 세계에서 달러를 대체할 수 있는 유일한 '실물 화폐'로 취급받습니다.
+                    달러가 약세를 보이거나 국가들이 달러 의존도를 낮추려 할 때 금의 가치는 상승합니다.
+                    무역가중 달러 지수(DTWEXBGS)를 사용합니다.
+                </p>
+            </div>
+
+            <div class="indicator-card">
+                <span class="direction positive">↑ 양의 관계 (Positive)</span>
+                <h3>3. 중앙은행 매수세 (Central Bank Purchases)</h3>
+                <p>
+                    최근 금값 폭등의 가장 큰 원인입니다. 중국, 인도, 중동 등 신흥국 중앙은행들이
+                    외환보유고에서 달러 대신 금을 쓸어 담고 있습니다.
+                    분기별 순매수량(톤)을 지표로 사용합니다.
+                </p>
+            </div>
+
+            <div class="indicator-card">
+                <span class="direction floor">⊥ 하한선 (Price Floor)</span>
+                <h3>4. 채굴 원가 (AISC — All-In Sustaining Cost)</h3>
+                <p>
+                    금을 땅에서 캐내는 데 드는 인건비, 에너지 비용 등의 총비용입니다.
+                    이 채굴 원가가 금값 하락 시 심리적인 '바닥(지지선)' 역할을 합니다.
+                    연간 산업 평균 AISC(USD/oz)를 사용합니다.
+                </p>
+            </div>
+
+            <div class="indicator-card">
+                <span class="direction positive">↑ 양의 관계 (Positive)</span>
+                <h3>5. 유가 (WTI Oil Price)</h3>
+                <p>
+                    유가는 달러로 결제되므로 금과 유사한 달러 가치 반영 자산입니다.
+                    또한 에너지 비용 상승은 채굴 원가 상승으로 이어져 금값을 지지합니다.
+                    WTI 원유 선물 가격(USD/배럴)을 사용합니다.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="chart-container" style="margin-top: 32px;">
+            <img src="images/scatter_indicators.png" alt="Gold vs individual indicators scatter plots">
+            <p class="caption">금 가격과 각 지표 간의 산점도 (Scatter plots)</p>
+        </div>
+    </section>
+
+    <!-- Correlation -->
+    <section>
+        <h2>지표 간 상관관계 (Correlation Matrix)</h2>
+        <p>지표들 간의 상관계수를 분석하여 다중공선성 및 관계를 파악합니다.</p>
+        <div class="chart-container">
+            <img src="images/correlation_heatmap.png" alt="Correlation heatmap">
+            <p class="caption">피처 간 상관관계 히트맵 — 빨간색: 음의 상관, 초록색: 양의 상관</p>
+        </div>
+    </section>
+
+    <!-- Model Results -->
+    <section>
+        <h2>모델 결과 (Model Results)</h2>
+        <p>
+            3가지 회귀 모델을 학습하고 마지막 18개월 데이터로 성능을 평가했습니다.<br>
+            <small style="color: var(--text-muted);">
+                ※ 아래 결과는 샘플 데이터 기준입니다. FRED API 키로 실제 데이터를 사용하면 결과가 크게 달라집니다.
+            </small>
+        </p>
+
+        <table class="metrics-table">
+            <thead>
+                <tr>
+                    <th>모델 (Model)</th>
+                    <th>RMSE</th>
+                    <th>MAE</th>
+                    <th>R²</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>OLS (선형 회귀)</td>
+                    <td>272.70</td>
+                    <td>216.11</td>
+                    <td>-43.65</td>
+                </tr>
+                <tr>
+                    <td>Ridge Regression (릿지 회귀)</td>
+                    <td>206.99</td>
+                    <td>175.49</td>
+                    <td>-24.73</td>
+                </tr>
+                <tr>
+                    <td>Gradient Boosting (그래디언트 부스팅)</td>
+                    <td>188.10</td>
+                    <td>128.87</td>
+                    <td>-20.24</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="chart-container">
+            <img src="images/actual_vs_predicted.png" alt="Actual vs predicted gold price">
+            <p class="caption">테스트 기간 금 가격: 실제 vs 예측 (Actual vs Predicted)</p>
+        </div>
+
+        <div class="two-col">
+            <div class="chart-container">
+                <img src="images/feature_importance.png" alt="Feature importance">
+                <p class="caption">Gradient Boosting 피처 중요도</p>
+            </div>
+            <div class="chart-container">
+                <img src="images/coefficients.png" alt="Linear regression coefficients">
+                <p class="caption">선형 회귀 계수 (표준화)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology -->
+    <section>
+        <h2>방법론 (Methodology)</h2>
+
+        <h3>데이터</h3>
+        <p>
+            2010년~2025년 월간(monthly) 데이터를 사용합니다.
+            일간 시장 데이터(금 가격, 실질 금리, 유가, 달러 지수)는 월말 기준으로 리샘플링하고,
+            분기/연간 데이터(중앙은행 매수, AISC)는 전방 채움(forward-fill)하여 월간 빈도로 맞춥니다.
+        </p>
+
+        <h3>모델</h3>
+        <p>
+            <strong>OLS (선형 회귀)</strong>: 기본 베이스라인. 계수의 부호로 경제적 관계를 해석합니다.<br>
+            <strong>Ridge 회귀</strong>: 다중공선성(DXY↔유가)을 처리하기 위한 L2 정규화 적용.<br>
+            <strong>Gradient Boosting</strong>: 비선형 관계를 포착. n_estimators=200, max_depth=4, learning_rate=0.05.
+        </p>
+
+        <h3>평가</h3>
+        <p>
+            시계열 특성을 고려하여 랜덤 셔플 없이 마지막 18개월을 테스트 셋으로 분리합니다.
+            RMSE, MAE, R² 지표로 성능을 평가합니다.
+        </p>
+
+        <h3>데이터 출처</h3>
+        <p>
+            <a href="https://fred.stlouisfed.org/" target="_blank">FRED (Federal Reserve Economic Data)</a> —
+            금 가격, 실질 금리, WTI 유가, 달러 지수<br>
+            <a href="https://www.gold.org/goldhub/data" target="_blank">World Gold Council</a> —
+            중앙은행 매수량, AISC 채굴 원가
+        </p>
+
+        <h3>한계점 (Limitations)</h3>
+        <p>
+            중앙은행 매수 데이터는 분기별, AISC는 연간 데이터로 월간 보간 시 정밀도가 떨어집니다.
+            약 150개 월간 데이터포인트로 모델을 학습하므로 과적합에 유의해야 합니다.
+            지정학적 리스크, 투기적 수요 등 정량화하기 어려운 요인은 모델에 포함되지 않았습니다.
+        </p>
+    </section>
+
+</div>
+
+<footer>
+    <div class="container">
+        <p>
+            Gold Price Regression Model —
+            <a href="https://github.com/hpicsk/gold_price" target="_blank">GitHub Repository</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
